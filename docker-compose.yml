@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: pixelpath_postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=pixelpath_db
+      - POSTGRES_USER=pixelpath_user
+      - POSTGRES_PASSWORD=supersecretpassword
+    ports:
+      - "5432:5432"
+    # --- ADICIONE ESTA SEÇÃO ---
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pixelpath_user -d pixelpath_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./ppc-api # ou ./backend, dependendo do que você decidiu
+    container_name: pixelpath_django_backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./ppc-api:/app # ou ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_NAME=pixelpath_db
+      - DB_USER=pixelpath_user
+      - DB_PASSWORD=supersecretpassword
+      - DB_HOST=db
+      - DB_PORT=5432
+    # --- MODIFIQUE ESTA SEÇÃO ---
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

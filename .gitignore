@@ -1,0 +1,24 @@
+# Arquivos de ambiente
+.env
+
+# Dependências do Python e ambiente virtual
+venv/
+*.pyc
+__pycache__/
+pip-cache/
+
+# Arquivos de cache e de IDEs
+.idea/
+.vscode/
+*.swp
+
+# Dados do volume do Docker
+postgres_data/
+
+# Arquivos de build do Next.js (para o futuro)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Arquivos de log
+*.log
